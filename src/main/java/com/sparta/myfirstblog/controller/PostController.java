@@ -2,7 +2,6 @@ package com.sparta.myfirstblog.controller;
 
 import com.sparta.myfirstblog.dto.PostRequestDto;
 import com.sparta.myfirstblog.dto.PostResponseDto;
-import com.sparta.myfirstblog.entity.Post;
 import com.sparta.myfirstblog.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
