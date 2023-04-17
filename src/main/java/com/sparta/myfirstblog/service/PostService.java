@@ -12,22 +12,26 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class PostService {
     public final PostRepository postRepository;
 
-    @Transactional
+    //게시글 등록
     public PostResponseDto createPost(PostRequestDto requestDto) {
         Post post = new Post(requestDto);
         return new PostResponseDto(postRepository.save(post));
     }
-    @Transactional
+
+    //게시글 목록 조회
+    @Transactional(readOnly = true)
     public List<PostResponseDto> getList() {
         return postRepository.findAllByOrderByCreatedAtDesc().stream()
                 .map(PostResponseDto::new).collect(Collectors.toList());
     }
 
-    @Transactional
+    //선택한 게시글 조회
+    @Transactional(readOnly = true)
     public PostResponseDto getPost(Long id){
         Post post = postRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
@@ -35,7 +39,7 @@ public class PostService {
         return new PostResponseDto(post);
     }
 
-    @Transactional
+    //게시글 수정
     public PostResponseDto update(Long id, PostRequestDto requestDto) {
         Post post = postRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
@@ -48,7 +52,7 @@ public class PostService {
         return new PostResponseDto(post);
     }
 
-    @Transactional
+    //게시글 삭제
     public String deletePost(Long id, String password) {
         Post post = postRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
