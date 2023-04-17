@@ -1,6 +1,7 @@
 package com.sparta.myfirstblog.controller;
 
 import com.sparta.myfirstblog.dto.PostRequestDto;
+import com.sparta.myfirstblog.dto.PostResponseDto;
 import com.sparta.myfirstblog.entity.Post;
 import com.sparta.myfirstblog.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ public class PostController {
     }
 
     @GetMapping("/posts")
-    public List<Post> getPosts() {
+    public List<PostResponseDto> getPosts() {
         return postService.getPosts();
     }
 

@@ -1,6 +1,7 @@
 package com.sparta.myfirstblog.service;
 
 import com.sparta.myfirstblog.dto.PostRequestDto;
+import com.sparta.myfirstblog.dto.PostResponseDto;
 import com.sparta.myfirstblog.entity.Post;
 import com.sparta.myfirstblog.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,8 +23,9 @@ public class PostService {
         return post;
     }
     @Transactional
-    public List<Post> getPosts() {
-        return postRepository.findAllByOrderByModifiedAtDesc();
+    public List<PostResponseDto> getPosts() {
+        return postRepository.findAllByOrderByModifiedAtDesc().stream()
+                .map(PostResponseDto::new).collect(Collectors.toList());
     }
     @Transactional
     public Long update(Long id, PostRequestDto requestDto) {
