@@ -32,4 +32,10 @@ public class PostService {
         post.update(requestDto);
         return post.getId();
     }
+
+    @Transactional
+    public Long deletePost(Long id) {
+        postRepository.deleteById(id);
+        return id;
+    }
 }
