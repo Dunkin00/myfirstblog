@@ -50,8 +50,15 @@ public class PostService {
     }
 
     @Transactional
-    public Long deletePost(Long id) {
-        postRepository.deleteById(id);
+    public Long deletePost(Long id, String password) {
+        Post post = postRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
+        );
+        if(password.equals(post.getPassword())){
+            postRepository.deleteById(id);
+        } else {
+            return id;
+        }
         return id;
     }
 }

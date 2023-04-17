@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,7 +38,7 @@ public class PostController {
     }
 
     @DeleteMapping("/post/{id}")
-    public Long deletePost(@PathVariable Long id){
-        return postService.deletePost(id);
+    public Long deletePost(@PathVariable Long id, @RequestBody Map<String, String> password){
+        return postService.deletePost(id, password.get("password"));
     }
 }
