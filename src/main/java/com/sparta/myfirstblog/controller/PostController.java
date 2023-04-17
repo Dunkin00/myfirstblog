@@ -21,9 +21,15 @@ public class PostController {
     }
 
     @GetMapping("/posts")
-    public List<PostResponseDto> getPosts() {
-        return postService.getPosts();
+    public List<PostResponseDto> getList() {
+        return postService.getList();
     }
+
+    @GetMapping("/post/{id}")
+    public PostResponseDto getPost(@PathVariable Long id){
+        return postService.getPost(id);
+    }
+
 
     @PutMapping("/post/{id}")
     public Long updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto){

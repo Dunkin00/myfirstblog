@@ -23,10 +23,19 @@ public class PostService {
         return post;
     }
     @Transactional
-    public List<PostResponseDto> getPosts() {
+    public List<PostResponseDto> getList() {
         return postRepository.findAllByOrderByModifiedAtDesc().stream()
                 .map(PostResponseDto::new).collect(Collectors.toList());
     }
+
+    @Transactional
+    public PostResponseDto getPost(Long id){
+        Post post = postRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
+        );
+        return new PostResponseDto(post);
+    }
+
     @Transactional
     public Long update(Long id, PostRequestDto requestDto) {
         Post post = postRepository.findById(id).orElseThrow(
