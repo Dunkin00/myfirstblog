@@ -24,4 +24,12 @@ public class PostService {
     public List<Post> getPosts() {
         return postRepository.findAllByOrderByModifiedAtDesc();
     }
+    @Transactional
+    public Long update(Long id, PostRequestDto requestDto) {
+        Post post = postRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
+        );
+        post.update(requestDto);
+        return post.getId();
+    }
 }
