@@ -41,7 +41,11 @@ public class PostService {
         Post post = postRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
         );
-        post.update(requestDto);
+        if(requestDto.getPassword().equals(post.getPassword())){
+            post.update(requestDto);
+        } else {
+            return post.getId();
+        }
         return post.getId();
     }
 
