@@ -17,10 +17,9 @@ public class PostService {
     public final PostRepository postRepository;
 
     @Transactional
-    public Post createPost(PostRequestDto requestDto) {
+    public PostResponseDto createPost(PostRequestDto requestDto) {
         Post post = new Post(requestDto);
-        postRepository.save(post);
-        return post;
+        return new PostResponseDto(postRepository.save(post));
     }
     @Transactional
     public List<PostResponseDto> getList() {
