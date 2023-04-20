@@ -4,9 +4,7 @@ import com.sparta.myfirstblog.dto.LoginRequestDto;
 import com.sparta.myfirstblog.dto.SignupRequestDto;
 import com.sparta.myfirstblog.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
 

@@ -59,7 +59,7 @@ public class PostService {
             Post post = new Post(requestDto, user.getId());
             return new PostResponseDto(postRepository.save(post));
         } else {
-            return null;
+            return new PostResponseDto();
         }
     }
 

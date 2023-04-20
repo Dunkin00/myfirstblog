@@ -30,7 +30,7 @@ public class UserService {
             throw new IllegalArgumentException("중복된 사용자가 존재합니다.");
         }
 
-        User user = new User(signupRequestDto.getUsername(), signupRequestDto.getPassword());
+        User user = new User(username, password);
         userRepository.save(user);
         return "회원 가입 완료";
     }
