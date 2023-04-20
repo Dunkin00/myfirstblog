@@ -27,7 +27,6 @@ public class UserService {
 
         User user = new User(signupRequestDto.getUsername(), signupRequestDto.getPassword());
         userRepository.save(user);
-
         return "회원 가입 완료";
     }
 
