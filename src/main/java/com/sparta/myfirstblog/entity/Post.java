@@ -22,13 +22,23 @@ public class Post extends Timestamped {
     @Column(nullable = false)
     private String contents;
 
+    @Column(nullable = false)
+    private Long userId;
+
+    public Post(PostRequestDto requestDto, Long userId) {
+        this.username = requestDto.getUsername();
+        this.password = requestDto.getPassword();
+        this.title = requestDto.getTitle();
+        this.contents = requestDto.getContents();
+        this.userId = userId;
+    }
+
     public Post(PostRequestDto requestDto) {
         this.username = requestDto.getUsername();
         this.password = requestDto.getPassword();
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
     }
-
 
     public void update(PostRequestDto requestDto) {
         this.username = requestDto.getUsername();

@@ -6,6 +6,8 @@ import com.sparta.myfirstblog.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
@@ -13,12 +15,6 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
-
-    //게시글 등록
-    @PostMapping("/post")
-    public PostResponseDto createPost(@RequestBody PostRequestDto requestDto) {
-        return postService.createPost(requestDto);
-    }
 
     //게시글 목록 조회
     @GetMapping("/posts")
@@ -30,6 +26,12 @@ public class PostController {
     @GetMapping("/post/{id}")
     public PostResponseDto getPost(@PathVariable Long id){
         return postService.getPost(id);
+    }
+
+    //게시글 등록
+    @PostMapping("/post")
+    public PostResponseDto createPost(@RequestBody PostRequestDto requestDto, HttpServletRequest request) {
+        return postService.createPost(requestDto, request);
     }
 
     //게시글 수정
