@@ -89,15 +89,26 @@ public class PostService {
     }
 
     //게시글 삭제
-    public String deletePost(Long id, String password) {
-        Post post = postRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
-        );
-        if(password.equals(post.getPassword())){
+    public String deletePost(Long id, HttpServletRequest request) {
+
+        String token = jwtUtil.resolveToken(request);
+        Claims claims;
+        if (token != null) {
+            if (jwtUtil.validateToken(token)) {
+                claims = jwtUtil.getUserInfoFromToken(token);
+            } else {
+                throw new IllegalArgumentException("Token Error");
+            }
+            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
+                    () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
+            );
+            Post post = postRepository.findById(id).orElseThrow(
+                    () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
+            );
             postRepository.deleteById(id);
+            return "삭제 성공했습니다.";
         } else {
             return "비밀번호가 틀립니다.";
         }
-        return "삭제 성공했습니다.";
     }
 }

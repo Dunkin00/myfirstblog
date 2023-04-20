@@ -42,7 +42,7 @@ public class PostController {
 
     //게시글 삭제
     @DeleteMapping("/post/{id}")
-    public String deletePost(@PathVariable Long id, @RequestBody PostRequestDto password){
-        return postService.deletePost(id, password.getPassword());
+    public String deletePost(@PathVariable Long id, HttpServletRequest request){
+        return postService.deletePost(id, request);
     }
 }
