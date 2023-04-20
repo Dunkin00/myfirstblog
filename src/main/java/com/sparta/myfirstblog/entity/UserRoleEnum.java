@@ -1,4 +1,4 @@
 package com.sparta.myfirstblog.entity;
 
-public class UserRoleEnum {
+public enum UserRoleEnum {
 }
