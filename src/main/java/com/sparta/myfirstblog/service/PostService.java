@@ -64,16 +64,28 @@ public class PostService {
     }
 
     //게시글 수정
-    public PostResponseDto update(Long id, PostRequestDto requestDto) {
-        Post post = postRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
-        );
-        if(requestDto.getPassword().equals(post.getPassword())){
+    public PostResponseDto update(Long id, PostRequestDto requestDto, HttpServletRequest request) {
+
+        String token = jwtUtil.resolveToken(request);
+        Claims claims;
+
+        if(token != null) {
+            if (jwtUtil.validateToken(token)) {
+                claims = jwtUtil.getUserInfoFromToken(token);
+            } else {
+                throw new IllegalArgumentException("Token Error");
+            }
+            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
+                    () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
+            );
+            Post post = postRepository.findById(id).orElseThrow(
+                    () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
+            );
             post.update(requestDto);
+            return new PostResponseDto(post);
         } else {
             return new PostResponseDto();
         }
-        return new PostResponseDto(post);
     }
 
     //게시글 삭제
