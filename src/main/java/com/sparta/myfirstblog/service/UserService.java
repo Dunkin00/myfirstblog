@@ -1,5 +1,6 @@
 package com.sparta.myfirstblog.service;
 
+import com.sparta.myfirstblog.dto.LoginRequestDto;
 import com.sparta.myfirstblog.dto.SignupRequestDto;
 import com.sparta.myfirstblog.entity.User;
 import com.sparta.myfirstblog.repository.UserRepository;
@@ -30,4 +31,17 @@ public class UserService {
         return "회원 가입 완료";
     }
 
+    public String login(LoginRequestDto loginRequestDto) {
+        String username = loginRequestDto.getUsername();
+        String password = loginRequestDto.getPassword();
+
+        User user = userRepository.findByUsername(username).orElseThrow(
+                () -> new IllegalArgumentException("등록된 사용자가 없습니다.")
+        );
+
+        if(!user.getPassword().equals(password)){
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+        return "로그인 성공";
+    }
 }

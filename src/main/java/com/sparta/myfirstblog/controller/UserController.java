@@ -1,5 +1,6 @@
 package com.sparta.myfirstblog.controller;
 
+import com.sparta.myfirstblog.dto.LoginRequestDto;
 import com.sparta.myfirstblog.dto.SignupRequestDto;
 import com.sparta.myfirstblog.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -27,5 +28,10 @@ public class UserController {
     @PostMapping("/signup")
     public String signup(@RequestBody SignupRequestDto signupRequestDto){
         return userService.signup(signupRequestDto);
+    }
+
+    @PostMapping("/login")
+    public String login(@RequestBody LoginRequestDto loginRequestDto){
+       return userService.login(loginRequestDto);
     }
 }
