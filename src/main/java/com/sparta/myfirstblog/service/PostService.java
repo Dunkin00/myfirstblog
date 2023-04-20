@@ -3,7 +3,7 @@ package com.sparta.myfirstblog.service;
 import com.sparta.myfirstblog.dto.PostRequestDto;
 import com.sparta.myfirstblog.dto.PostResponseDto;
 import com.sparta.myfirstblog.entity.Post;
-import com.sparta.myfirstblog.entity.User;
+import com.sparta.myfirstblog.entity.Users;
 import com.sparta.myfirstblog.jwt.JwtUtil;
 import com.sparta.myfirstblog.repository.PostRepository;
 import com.sparta.myfirstblog.repository.UserRepository;
@@ -42,6 +42,7 @@ public class PostService {
 
     //게시글 등록
     public PostResponseDto createPost(PostRequestDto requestDto, HttpServletRequest request) {
+        Post post = new Post(requestDto);
 
         String token = jwtUtil.resolveToken(request);
         Claims claims;
@@ -53,11 +54,12 @@ public class PostService {
                 throw new IllegalArgumentException("Token Error");
             }
 
-            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
+            Users user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
                     () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
             );
-            Post post = new Post(requestDto, user.getId());
-            return new PostResponseDto(postRepository.save(post));
+            post.addUser(user);
+            postRepository.save(post);
+            return new PostResponseDto(post);
         } else {
             return new PostResponseDto();
         }
@@ -75,12 +77,13 @@ public class PostService {
             } else {
                 throw new IllegalArgumentException("Token Error");
             }
-            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
+            Users user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
                     () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
             );
             Post post = postRepository.findById(id).orElseThrow(
                     () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
             );
+
             post.update(requestDto);
             return new PostResponseDto(post);
         } else {
@@ -99,7 +102,7 @@ public class PostService {
             } else {
                 throw new IllegalArgumentException("Token Error");
             }
-            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
+            Users user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
                     () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
             );
             Post post = postRepository.findById(id).orElseThrow(

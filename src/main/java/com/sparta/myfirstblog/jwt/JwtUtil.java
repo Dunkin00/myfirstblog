@@ -1,6 +1,5 @@
 package com.sparta.myfirstblog.jwt;
 
-import com.sparta.myfirstblog.entity.UserRoleEnum;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;

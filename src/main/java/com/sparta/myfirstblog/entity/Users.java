@@ -8,10 +8,11 @@ import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor
-@Entity(name = "users")
-public class User {
+@Entity
+public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -20,7 +21,12 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    public User(String username, String password) {
+    public Users(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    public Users(SignupRequestDto signupRequestDto) {
         this.username = username;
         this.password = password;
     }

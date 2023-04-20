@@ -2,7 +2,8 @@ package com.sparta.myfirstblog.service;
 
 import com.sparta.myfirstblog.dto.LoginRequestDto;
 import com.sparta.myfirstblog.dto.SignupRequestDto;
-import com.sparta.myfirstblog.entity.User;
+import com.sparta.myfirstblog.entity.UserRoleEnum;
+import com.sparta.myfirstblog.entity.Users;
 import com.sparta.myfirstblog.jwt.JwtUtil;
 import com.sparta.myfirstblog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
+    private static final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
     //회원가입
     @Transactional
@@ -25,12 +27,12 @@ public class UserService {
         String password = signupRequestDto.getPassword();
 
         //회원 중복 확인
-        Optional<User> found = userRepository.findByUsername(username);
+        Optional<Users> found = userRepository.findByUsername(username);
         if (found.isPresent()) {
             throw new IllegalArgumentException("중복된 사용자가 존재합니다.");
         }
 
-        User user = new User(username, password);
+        Users user = new Users(username, password);
         userRepository.save(user);
         return "회원 가입 완료";
     }
@@ -40,7 +42,7 @@ public class UserService {
         String username = loginRequestDto.getUsername();
         String password = loginRequestDto.getPassword();
 
-        User user = userRepository.findByUsername(username).orElseThrow(
+        Users user = userRepository.findByUsername(username).orElseThrow(
                 () -> new IllegalArgumentException("등록된 사용자가 없습니다.")
         );
 

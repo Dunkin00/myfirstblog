@@ -12,6 +12,7 @@ import javax.persistence.*;
 public class Post extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "post_id")
     private Long id;
     @Column(nullable = false)
     private String username;
@@ -20,14 +21,15 @@ public class Post extends Timestamped {
     @Column(nullable = false)
     private String contents;
 
-    @Column(nullable = false)
-    private Long userId;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private Users user;
 
-    public Post(PostRequestDto requestDto, Long userId) {
-        this.username = requestDto.getUsername();
-        this.title = requestDto.getTitle();
-        this.contents = requestDto.getContents();
-        this.userId = userId;
+    public Post(String username, String title, String contents, Users user){
+        this.username = username;
+        this.title = title;
+        this.contents = contents;
+        this.user = user;
     }
 
     public Post(PostRequestDto requestDto) {
@@ -40,5 +42,9 @@ public class Post extends Timestamped {
         this.username = requestDto.getUsername();
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
+    }
+
+    public void addUser(Users user) {
+        this.user = user;
     }
 }
