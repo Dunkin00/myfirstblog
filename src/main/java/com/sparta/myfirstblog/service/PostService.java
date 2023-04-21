@@ -37,91 +37,66 @@ public class PostService {
     //선택한 게시글 조회
     @Transactional(readOnly = true)
     public PostResponseDto getPost(Long id){
-        Post post = postRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
-        );
+        Post post = checkPost(id);
         return new PostResponseDto(post);
     }
 
     //게시글 등록
     public PostResponseDto createPost(PostRequestDto requestDto, HttpServletRequest request) {
-
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
-
-        if(token != null) {
-            if (jwtUtil.validateToken(token)) {
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new IllegalArgumentException("Token Error");
-            }
-
-            Users user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
-                    () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
-            );
-
-            Post post = new Post(requestDto, user);
-            postRepository.save(post);
-            return new PostResponseDto(post);
-        } else {
-            return null;
-        }
+        String token = isValidToken(request);
+        Claims claims = jwtUtil.getUserInfoFromToken(token);
+        Users user = checkUser(claims);
+        Post post = new Post(requestDto, user);
+        return new PostResponseDto(postRepository.save(post));
     }
 
     //게시글 수정
     public PostResponseDto update(Long id, PostRequestDto requestDto, HttpServletRequest request) {
-
-        String token = jwtUtil.resolveToken(request);
-        Claims claims;
-
-        if(token != null) {
-            if (jwtUtil.validateToken(token)) {
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new IllegalArgumentException("Token Error");
-            }
-            Users user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
-                    () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
-            );
-            Post post = postRepository.findById(id).orElseThrow(
-                    () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
-            );
-            if(user.getUsername().equals(post.getUsername())) {
-                post.update(requestDto);
-                return new PostResponseDto(post);
-            } else {
-                throw new IllegalArgumentException("작성자만 수정, 삭제 가능합니다.");
-            }
-        } else {
-            throw new NoSuchElementException("올바르지 않은 접근입니다.");
-        }
+        String token = isValidToken(request);
+        Claims claims = jwtUtil.getUserInfoFromToken(token);
+        Users user = checkUser(claims);
+        Post post = checkPost(id);
+        isUserPost(user,post);
+        post.update(requestDto);
+        return new PostResponseDto(post);
     }
 
     //게시글 삭제
     public MessageDto deletePost(Long id, HttpServletRequest request) {
+        String token = isValidToken(request);
+        Claims claims = jwtUtil.getUserInfoFromToken(token);
+        Users user = checkUser(claims);
+        Post post = checkPost(id);
+        isUserPost(user,post);
+        postRepository.deleteById(id);
+        return new MessageDto("게시글 삭제 성공", StatusEnum.OK);
+    }
 
+    //게시글 확인
+    public Post checkPost(Long id){
+        return postRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
+    }
+    //사용자 확인
+    public Users checkUser(Claims claims){
+        return  userRepository.findByUsername(claims.getSubject()).orElseThrow(
+                () -> new IllegalArgumentException("사용자가 존재하지 않습니다."));
+    }
+    //토큰 유효성 확인
+    public String isValidToken(HttpServletRequest request){
         String token = jwtUtil.resolveToken(request);
-        Claims claims;
-        if (token != null) {
-            if (jwtUtil.validateToken(token)) {
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new IllegalArgumentException("Token Error");
-            }
-            Users user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
-                    () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
-            );
-            Post post = postRepository.findById(id).orElseThrow(
-                    () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
-            );
-            if(user.getUsername().equals(post.getUsername())) {
-                postRepository.deleteById(id);
-                return new MessageDto("게시글 삭제 성공", StatusEnum.OK);
-            } else {
-                throw new IllegalArgumentException("작성자만 수정, 삭제 가능합니다.");
-            }
-        } else {
-            throw new NoSuchElementException("올바르지 못한 접근입니다.");
+        if(token == null) {
+            throw new NoSuchElementException("올바르지 않은 접근입니다.");
+        }
+        if (!jwtUtil.validateToken(token)) {
+            throw new IllegalArgumentException("Token Error");
+        }
+        return token;
+    }
+    //작성자 게시물 확인
+    public void isUserPost(Users user, Post post){
+        if (!user.getUsername().equals(post.getUsername())) {
+            throw new IllegalArgumentException("작성자만 수정, 삭제 가능합니다.");
         }
     }
 }
