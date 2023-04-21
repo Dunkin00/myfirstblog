@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,7 +19,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public String signup(@RequestBody SignupRequestDto signupRequestDto){
+    public String signup(@Valid @RequestBody SignupRequestDto signupRequestDto){
         return userService.signup(signupRequestDto);
     }
 
