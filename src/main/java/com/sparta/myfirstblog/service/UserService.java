@@ -1,11 +1,15 @@
 package com.sparta.myfirstblog.service;
 
 import com.sparta.myfirstblog.dto.LoginRequestDto;
+import com.sparta.myfirstblog.dto.MessageDto;
 import com.sparta.myfirstblog.dto.SignupRequestDto;
+import com.sparta.myfirstblog.entity.StatusEnum;
 import com.sparta.myfirstblog.entity.Users;
 import com.sparta.myfirstblog.jwt.JwtUtil;
 import com.sparta.myfirstblog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +24,7 @@ public class UserService {
 
     //회원가입
     @Transactional
-    public String signup(SignupRequestDto signupRequestDto) {
+    public ResponseEntity signup(SignupRequestDto signupRequestDto) {
         String username = signupRequestDto.getUsername();
         String password = signupRequestDto.getPassword();
 
@@ -32,12 +36,13 @@ public class UserService {
 
         Users user = new Users(username, password);
         userRepository.save(user);
-        return "회원 가입 완료";
+        MessageDto messageDto = new MessageDto("회원 가입 성공!", StatusEnum.OK);
+        return new ResponseEntity(messageDto, HttpStatus.OK);
     }
 
     //로그인
     @Transactional
-    public String login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
+    public ResponseEntity login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
         String username = loginRequestDto.getUsername();
         String password = loginRequestDto.getPassword();
 
@@ -49,6 +54,7 @@ public class UserService {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername()));
-        return "로그인 성공";
+        MessageDto messageDto = new MessageDto("로그인 성공!", StatusEnum.OK);
+        return new ResponseEntity(messageDto, HttpStatus.OK);
     }
 }

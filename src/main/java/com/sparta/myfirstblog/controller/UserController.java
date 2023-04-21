@@ -4,6 +4,7 @@ import com.sparta.myfirstblog.dto.LoginRequestDto;
 import com.sparta.myfirstblog.dto.SignupRequestDto;
 import com.sparta.myfirstblog.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -19,13 +20,13 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    public String signup(@Valid @RequestBody SignupRequestDto signupRequestDto){
+    public ResponseEntity signup(@Valid @RequestBody SignupRequestDto signupRequestDto){
         return userService.signup(signupRequestDto);
     }
 
     @ResponseBody
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response){
+    public ResponseEntity login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response){
         return userService.login(loginRequestDto, response);
     }
 }
