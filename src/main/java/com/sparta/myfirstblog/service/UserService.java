@@ -18,7 +18,6 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
-    private static final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
     //회원가입
     @Transactional
@@ -33,11 +32,13 @@ public class UserService {
         }
 
         Users user = new Users(username, password);
+
         userRepository.save(user);
         return "회원 가입 완료";
     }
 
     //로그인
+    @Transactional
     public String login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
         String username = loginRequestDto.getUsername();
         String password = loginRequestDto.getPassword();

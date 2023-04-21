@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
 public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
 
     //게시글 목록 조회
     @Transactional(readOnly = true)
@@ -42,7 +43,6 @@ public class PostService {
 
     //게시글 등록
     public PostResponseDto createPost(PostRequestDto requestDto, HttpServletRequest request) {
-        Post post = new Post(requestDto);
 
         String token = jwtUtil.resolveToken(request);
         Claims claims;
@@ -57,11 +57,13 @@ public class PostService {
             Users user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
                     () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
             );
+
+            Post post = new Post(requestDto);
             post.addUser(user);
             postRepository.save(post);
             return new PostResponseDto(post);
         } else {
-            return new PostResponseDto();
+            return null;
         }
     }
 
@@ -83,11 +85,11 @@ public class PostService {
             Post post = postRepository.findById(id).orElseThrow(
                     () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
             );
-
             post.update(requestDto);
+
             return new PostResponseDto(post);
         } else {
-            return new PostResponseDto();
+            throw new NoSuchElementException("올바르지 않은 접근입니다.");
         }
     }
 

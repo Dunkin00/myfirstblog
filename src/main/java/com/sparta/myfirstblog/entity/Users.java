@@ -1,6 +1,5 @@
 package com.sparta.myfirstblog.entity;
 
-import com.sparta.myfirstblog.dto.SignupRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,8 +25,4 @@ public class Users {
         this.password = password;
     }
 
-    public Users(SignupRequestDto signupRequestDto) {
-        this.username = username;
-        this.password = password;
-    }
 }
