@@ -58,8 +58,7 @@ public class PostService {
                     () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
             );
 
-            Post post = new Post(requestDto);
-            post.addUser(user);
+            Post post = new Post(requestDto, user);
             postRepository.save(post);
             return new PostResponseDto(post);
         } else {
@@ -85,9 +84,12 @@ public class PostService {
             Post post = postRepository.findById(id).orElseThrow(
                     () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
             );
-            post.update(requestDto);
-
-            return new PostResponseDto(post);
+            if(user.getUsername().equals(post.getUsername())) {
+                post.update(requestDto);
+                return new PostResponseDto(post);
+            } else {
+                throw new IllegalArgumentException("작성자만 수정, 삭제 가능합니다.");
+            }
         } else {
             throw new NoSuchElementException("올바르지 않은 접근입니다.");
         }
@@ -110,8 +112,12 @@ public class PostService {
             Post post = postRepository.findById(id).orElseThrow(
                     () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
             );
-            postRepository.deleteById(id);
-            return "삭제 성공했습니다.";
+            if(user.getUsername().equals(post.getUsername())) {
+                postRepository.deleteById(id);
+                return "삭제 성공했습니다.";
+            } else {
+                throw new IllegalArgumentException("작성자만 수정, 삭제 가능합니다.");
+            }
         } else {
             return "비밀번호가 틀립니다.";
         }

@@ -32,7 +32,6 @@ public class UserService {
         }
 
         Users user = new Users(username, password);
-
         userRepository.save(user);
         return "회원 가입 완료";
     }

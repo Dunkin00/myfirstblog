@@ -25,26 +25,15 @@ public class Post extends Timestamped {
     @JoinColumn(name = "user_id")
     private Users user;
 
-    public Post(String username, String title, String contents, Users user){
-        this.username = username;
-        this.title = title;
-        this.contents = contents;
-        this.user = user;
-    }
-
-    public Post(PostRequestDto requestDto) {
-        this.username = requestDto.getUsername();
+    public Post(PostRequestDto requestDto, Users user) {
+        this.username = user.getUsername();
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
+        this.user = user;
     }
 
     public void update(PostRequestDto requestDto) {
-        this.username = requestDto.getUsername();
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
-    }
-
-    public void addUser(Users user) {
-        this.user = user;
     }
 }
