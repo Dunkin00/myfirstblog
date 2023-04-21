@@ -2,7 +2,6 @@ package com.sparta.myfirstblog.service;
 
 import com.sparta.myfirstblog.dto.LoginRequestDto;
 import com.sparta.myfirstblog.dto.SignupRequestDto;
-import com.sparta.myfirstblog.entity.UserRoleEnum;
 import com.sparta.myfirstblog.entity.Users;
 import com.sparta.myfirstblog.jwt.JwtUtil;
 import com.sparta.myfirstblog.repository.UserRepository;

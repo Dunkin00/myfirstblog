@@ -1,8 +1,10 @@
 package com.sparta.myfirstblog.service;
 
+import com.sparta.myfirstblog.dto.MessageDto;
 import com.sparta.myfirstblog.dto.PostRequestDto;
 import com.sparta.myfirstblog.dto.PostResponseDto;
 import com.sparta.myfirstblog.entity.Post;
+import com.sparta.myfirstblog.entity.StatusEnum;
 import com.sparta.myfirstblog.entity.Users;
 import com.sparta.myfirstblog.jwt.JwtUtil;
 import com.sparta.myfirstblog.repository.PostRepository;
@@ -96,7 +98,7 @@ public class PostService {
     }
 
     //게시글 삭제
-    public String deletePost(Long id, HttpServletRequest request) {
+    public MessageDto deletePost(Long id, HttpServletRequest request) {
 
         String token = jwtUtil.resolveToken(request);
         Claims claims;
@@ -114,12 +116,12 @@ public class PostService {
             );
             if(user.getUsername().equals(post.getUsername())) {
                 postRepository.deleteById(id);
-                return "삭제 성공했습니다.";
+                return new MessageDto("게시글 삭제 성공", StatusEnum.OK);
             } else {
                 throw new IllegalArgumentException("작성자만 수정, 삭제 가능합니다.");
             }
         } else {
-            return "비밀번호가 틀립니다.";
+            throw new NoSuchElementException("올바르지 못한 접근입니다.");
         }
     }
 }

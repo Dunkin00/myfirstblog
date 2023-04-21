@@ -1,5 +1,6 @@
 package com.sparta.myfirstblog.controller;
 
+import com.sparta.myfirstblog.dto.MessageDto;
 import com.sparta.myfirstblog.dto.PostRequestDto;
 import com.sparta.myfirstblog.dto.PostResponseDto;
 import com.sparta.myfirstblog.service.PostService;
@@ -43,7 +44,7 @@ public class PostController {
 
     //게시글 삭제
     @DeleteMapping("/post/{id}")
-    public String deletePost(@PathVariable Long id, HttpServletRequest request){
+    public MessageDto deletePost(@PathVariable Long id, HttpServletRequest request){
         return postService.deletePost(id, request);
     }
 }
