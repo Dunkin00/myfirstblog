@@ -37,53 +37,54 @@ public class PostService {
     //선택한 게시글 조회
     @Transactional(readOnly = true)
     public PostResponseDto getPost(Long id){
-        Post post = checkPost(id);
+        Post post = findPostById(id);
+        System.out.println("선택한 게시글 조회 post -> "+post);
         return new PostResponseDto(post);
     }
 
     //게시글 등록
     public PostResponseDto createPost(PostRequestDto requestDto, HttpServletRequest request) {
-        String token = isValidToken(request);
+        String token = getToken(request);
         Claims claims = jwtUtil.getUserInfoFromToken(token);
-        Users user = checkUser(claims);
+        Users user = findUser(claims);
         Post post = new Post(requestDto, user);
         return new PostResponseDto(postRepository.save(post));
     }
 
     //게시글 수정
     public PostResponseDto update(Long id, PostRequestDto requestDto, HttpServletRequest request) {
-        String token = isValidToken(request);
+        String token = getToken(request);
         Claims claims = jwtUtil.getUserInfoFromToken(token);
-        Users user = checkUser(claims);
-        Post post = checkPost(id);
-        isUserPost(user,post);
+        Users user = findUser(claims);
+        Post post = findPostById(id);
+        isUsersPost(user,post);
         post.update(requestDto);
         return new PostResponseDto(post);
     }
 
     //게시글 삭제
     public MessageDto deletePost(Long id, HttpServletRequest request) {
-        String token = isValidToken(request);
+        String token = getToken(request);
         Claims claims = jwtUtil.getUserInfoFromToken(token);
-        Users user = checkUser(claims);
-        Post post = checkPost(id);
-        isUserPost(user,post);
+        Users user = findUser(claims);
+        Post post = findPostById(id);
+        isUsersPost(user,post);
         postRepository.deleteById(id);
         return new MessageDto("게시글 삭제 성공", StatusEnum.OK);
     }
 
     //게시글 확인
-    public Post checkPost(Long id){
+    public Post findPostById(Long id){
         return postRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
     }
     //사용자 확인
-    public Users checkUser(Claims claims){
+    public Users findUser(Claims claims){
         return  userRepository.findByUsername(claims.getSubject()).orElseThrow(
                 () -> new IllegalArgumentException("사용자가 존재하지 않습니다."));
     }
-    //토큰 유효성 확인
-    public String isValidToken(HttpServletRequest request){
+    //토큰 확인
+    public String getToken(HttpServletRequest request){
         String token = jwtUtil.resolveToken(request);
         if(token == null) {
             throw new NoSuchElementException("올바르지 않은 접근입니다.");
@@ -94,8 +95,8 @@ public class PostService {
         return token;
     }
     //작성자 게시물 확인
-    public void isUserPost(Users user, Post post){
-        if (!user.getUsername().equals(post.getUsername())) {
+    public void isUsersPost(Users user, Post post){
+        if (!post.getUser().getId().equals(user.getId())) {
             throw new IllegalArgumentException("작성자만 수정, 삭제 가능합니다.");
         }
     }

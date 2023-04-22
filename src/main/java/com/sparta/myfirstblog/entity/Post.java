@@ -15,8 +15,6 @@ public class Post extends Timestamped {
     @Column(name = "post_id")
     private Long id;
     @Column(nullable = false)
-    private String username;
-    @Column(nullable = false)
     private String title;
     @Column(nullable = false)
     private String contents;
@@ -26,7 +24,6 @@ public class Post extends Timestamped {
     private Users user;
 
     public Post(PostRequestDto requestDto, Users user) {
-        this.username = user.getUsername();
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
         this.user = user;

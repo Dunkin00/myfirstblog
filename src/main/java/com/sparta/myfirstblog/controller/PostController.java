@@ -32,7 +32,6 @@ public class PostController {
     //게시글 등록
     @PostMapping("/post")
     public PostResponseDto createPost(@RequestBody PostRequestDto requestDto, HttpServletRequest request) {
-        System.out.println(request.getHeader("Authorization"));
         return postService.createPost(requestDto, request);
     }
 
